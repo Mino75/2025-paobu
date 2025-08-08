@@ -81,6 +81,7 @@ const ASSETS = [
   '/main.js',
   '/styles.js',
   '/manifest.json',
+  '/elements.json',
 ];
 
 // Logging helper
