@@ -18,6 +18,14 @@ let speed = 2;  // base automatic movement speed in px/frame
 let lastProcedureX = 0;
 let sceneData = null;
 
+// procedural param
+
+const PROCEDURE_DISTANCE = 6000;   // distance traveled before new generation
+const PRELOAD_AHEAD = 4500;         // generate 1500px before the threshold
+const CLEANUP_BEHIND = 500;         // remove old elements behind view
+
+
+
 // utility
 function getRandom(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
@@ -85,8 +93,8 @@ function animate() {
   applyParallax();
 
   // generate new procedure every 2000px
-  if (offsetX - lastProcedureX >= 2000) {
-    generateProcedure(offsetX + 1500); // preload at 1500px before threshold
+  if (offsetX - lastProcedureX >= PROCEDURE_DISTANCE) {
+    generateProcedure(offsetX + PRELOAD_AHEAD); // preload at 1500px before threshold
     lastProcedureX = offsetX;
     cleanupOldElements();
     randomizeCharacter();
