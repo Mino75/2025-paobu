@@ -120,6 +120,32 @@ window.addEventListener('touchend', e => {
   xDown = null;
 }, false);
 
+
+// Ensure all layers exist in the DOM
+function ensureLayers() {
+  const scene = document.querySelector('.scene');
+  if (!scene) {
+    console.error('Scene container not found!');
+    return;
+  }
+
+  layerConfig.forEach(cfg => {
+    let layer = document.getElementById(cfg.id);
+    if (!layer) {
+      layer = document.createElement('div');
+      layer.id = cfg.id;
+      layer.className = 'layer';
+      layer.style.position = 'absolute';
+      layer.style.top = '0';
+      layer.style.left = '0';
+      layer.style.width = '100%';
+      layer.style.height = '100%';
+      scene.appendChild(layer);
+    }
+  });
+}
+
+
 // change character after procedure
 function randomizeCharacter() {
   const cfg = layerConfig.find(l => l.id === 'layer10');
@@ -135,6 +161,7 @@ fetch('elements.json')
   .then(res => res.json())
   .then(data => {
     sceneData = data;
+    ensureLayers();       // <-- automatically create missing layers
     generateProcedure(0);           // initial scene
     randomizeCharacter();
     animate();
