@@ -2,10 +2,10 @@
 
 const layerConfig = [
   { id:'layer1', key:'layer1', factor:0.1,  yFrac:0.10, fontSize:120, minSpacing:2800 }, 
-  { id:'layer2', key:'layer2', factor:0.15, yFrac:0.12, fontSize:110, minSpacing:1600 }, 
-  { id:'layer3', key:'layer3', factor:0.3,  yFrac:0.50, fontSize:400, minSpacing:2000 }, 
-  { id:'layer4', key:'layer4', factor:0.5,  yFrac:0.60, fontSize:300, minSpacing:1400 }, 
-  { id:'layer5', key:'layer5', factor:0.6,  yFrac:0.65, fontSize:80,  minSpacing:100 },
+  { id:'layer2', key:'layer2', factor:0.15, yFrac:0.12, fontSize:110, minSpacing:300 }, 
+  { id:'layer3', key:'layer3', factor:0.3,  yFrac:0.50, fontSize:400, minSpacing:400 }, 
+  { id:'layer4', key:'layer4', factor:0.5,  yFrac:0.60, fontSize:300, minSpacing:350 }, 
+  { id:'layer5', key:'layer5', factor:0.6,  yFrac:0.65, fontSize:80,  minSpacing:200 },
   { id:'layer6', key:'layer6', factor:0.65, yFrac:0.70, fontSize:90,  minSpacing:120 },
   { id:'layer7', key:'layer7', factor:0.75, yFrac:0.75, fontSize:60,  minSpacing:80  },
   { id:'layer8', key:'layer8', factor:0.9,  yFrac:0.85, fontSize:30,  minSpacing:40  },
