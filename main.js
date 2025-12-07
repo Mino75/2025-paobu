@@ -14,25 +14,19 @@ const layerConfig = [
 ];
 
 let offsetX = 0;
-let speed = 2;  // base automatic movement speed in px/frame
+let speed = 2;  
 let lastProcedureX = 0;
 let sceneData = null;
 
-// procedural param
+const PROCEDURE_DISTANCE = 6000;   
+const PRELOAD_AHEAD = 4500;        
+const CLEANUP_BEHIND = 500;       
 
-const PROCEDURE_DISTANCE = 6000;   // distance traveled before new generation
-const PRELOAD_AHEAD = 4500;         // generate 1500px before the threshold
-const CLEANUP_BEHIND = 500;         // remove old elements behind view
-
-
-
-// utility
 function getRandom(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-// create & place one element
 function createEmoji(emoji, layerId, x, baselineY, fontSize) {
   const layer = document.getElementById(layerId);
-  if (!layer) return; // skip if layer doesn't exist
+  if (!layer) return;
   const el = document.createElement('span');
   el.textContent = emoji;
   el.style.position = 'absolute';
@@ -42,59 +36,82 @@ function createEmoji(emoji, layerId, x, baselineY, fontSize) {
   layer.appendChild(el);
 }
 
+// generate procedure with candidate selection and 50% chance per minSpacing
+function generateProcedure(startX, width = 500) {
+  console.log(`\n--- Generating procedure at ${startX}px ---`);
 
-// generate a procedure starting at offsetX
-function generateProcedure(startX) {
   layerConfig.forEach(cfg => {
     const arr = sceneData[cfg.key];
-    const count = getRandom(...cfg.countRange);
     const baselineY = Math.floor(window.innerHeight * cfg.yFrac);
-    const placedX = [];
+    const layer = document.getElementById(cfg.id);
+    if (!layer) return;
 
-    for (let i = 0; i < count; i++) {
-      const emoji = arr[getRandom(0, arr.length - 1)];
-      const fontSize = cfg.fontSize;
-      let x;
-      let attempts = 0;
-      do {
-        x = getRandom(startX, startX + 500);  // procedural segment width
-        attempts++;
-      } while (placedX.some(px => Math.abs(x - px) < cfg.minSpacing) && attempts < 20);
-      placedX.push(x);
+    // Step 1: select candidates for this procedure
+    const candidateCount = getRandom(...cfg.countRange);
+    const candidates = [];
+    for (let i = 0; i < candidateCount; i++) {
+      candidates.push(arr[getRandom(0, arr.length - 1)]);
+    }
+    console.log(`Layer: ${cfg.id}, Candidates: ${candidates.join(', ')}`);
 
-      createEmoji(emoji, cfg.id, x, baselineY, fontSize);
+    // Step 2: iterate along procedure segment
+    for (let x = startX; x <= startX + width; x += cfg.minSpacing) {
+      if (Math.random() < 0.5) continue;  // 50% chance to leave empty
+      const emoji = candidates[getRandom(0, candidates.length - 1)];
+      createEmoji(emoji, cfg.id, x, baselineY, cfg.fontSize);
+      console.log(`Placed: Layer: ${cfg.id}, Emoji: ${emoji}, X: ${x}`);
     }
   });
 }
 
-// remove old elements behind view
+// remove elements behind view
 function cleanupOldElements() {
   layerConfig.forEach(cfg => {
     const layer = document.getElementById(cfg.id);
+    if (!layer) return;
     Array.from(layer.children).forEach(child => {
-      if (parseFloat(child.style.left) + cfg.fontSize < offsetX - 500) {
+      if (parseFloat(child.style.left) + cfg.fontSize < offsetX - CLEANUP_BEHIND) {
         layer.removeChild(child);
       }
     });
   });
 }
 
-// update layer positions based on offsetX
+// parallax
 function applyParallax() {
   layerConfig.forEach(cfg => {
-    document.getElementById(cfg.id)
-      .style.transform = `translateX(${-offsetX * cfg.factor}px)`;
+    const layer = document.getElementById(cfg.id);
+    if (!layer) return;
+    layer.style.transform = `translateX(${-offsetX * cfg.factor}px)`;
   });
 }
 
-// main animation loop
+// speed boost temporary
+let boostTimeout = null;
+function boostSpeed(amount, duration = 300) {
+  speed = Math.max(1, speed + amount);
+  clearTimeout(boostTimeout);
+  boostTimeout = setTimeout(() => { speed = 2; }, duration);
+}
+
+// randomize main character
+function randomizeCharacter() {
+  const cfg = layerConfig.find(l => l.id === 'layer10');
+  const arr = sceneData[cfg.key];
+  const layer = document.getElementById(cfg.id);
+  if (!layer) return;
+  layer.innerHTML = '';
+  const baselineY = Math.floor(window.innerHeight * cfg.yFrac);
+  createEmoji(arr[getRandom(0, arr.length - 1)], cfg.id, window.innerWidth/2, baselineY, cfg.fontSize);
+}
+
+// animation loop
 function animate() {
   offsetX += speed;
   applyParallax();
 
-  // generate new procedure every 2000px
   if (offsetX - lastProcedureX >= PROCEDURE_DISTANCE) {
-    generateProcedure(offsetX + PRELOAD_AHEAD); // preload at 1500px before threshold
+    generateProcedure(offsetX + PRELOAD_AHEAD);
     lastProcedureX = offsetX;
     cleanupOldElements();
     randomizeCharacter();
@@ -103,36 +120,28 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-// speed boost on arrow keys
+// controls
 window.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight') speed += 1;
-  if (e.key === 'ArrowLeft') speed = Math.max(1, speed - 1);
+  if (e.key === 'ArrowRight') boostSpeed(3);
+  if (e.key === 'ArrowLeft')  boostSpeed(-1);
 });
 
-// optional swipe support
 let xDown = null;
 window.addEventListener('touchstart', e => xDown = e.touches[0].clientX, false);
 window.addEventListener('touchend', e => {
   if (!xDown) return;
   const xUp = e.changedTouches[0].clientX;
-  speed += (xUp < xDown) ? 1 : -1;
-  speed = Math.max(1, speed);
+  boostSpeed((xUp < xDown) ? 3 : -1);
   xDown = null;
 }, false);
 
-
-// Ensure all layers exist in the DOM
+// ensure layers exist
 function ensureLayers() {
   const scene = document.querySelector('.scene');
-  if (!scene) {
-    console.error('Scene container not found!');
-    return;
-  }
-
+  if (!scene) return console.error('Scene container missing!');
   layerConfig.forEach(cfg => {
-    let layer = document.getElementById(cfg.id);
-    if (!layer) {
-      layer = document.createElement('div');
+    if (!document.getElementById(cfg.id)) {
+      const layer = document.createElement('div');
       layer.id = cfg.id;
       layer.className = 'layer';
       layer.style.position = 'absolute';
@@ -145,24 +154,13 @@ function ensureLayers() {
   });
 }
 
-
-// change character after procedure
-function randomizeCharacter() {
-  const cfg = layerConfig.find(l => l.id === 'layer10');
-  const arr = sceneData[cfg.key];
-  const layer = document.getElementById(cfg.id);
-  layer.innerHTML = '';  // remove old character
-  const baselineY = Math.floor(window.innerHeight * cfg.yFrac);
-  createEmoji(arr[getRandom(0, arr.length - 1)], cfg.id, window.innerWidth/2, baselineY, cfg.fontSize);
-}
-
 // initialize
 fetch('elements.json')
   .then(res => res.json())
   .then(data => {
     sceneData = data;
-    ensureLayers();       // <-- automatically create missing layers
-    generateProcedure(0);           // initial scene
+    ensureLayers();
+    generateProcedure(0);   // initial scene
     randomizeCharacter();
     animate();
   })
