@@ -23,14 +23,17 @@ function getRandom(min, max) { return Math.floor(Math.random() * (max - min + 1)
 
 // create & place one element
 function createEmoji(emoji, layerId, x, baselineY, fontSize) {
+  const layer = document.getElementById(layerId);
+  if (!layer) return; // skip if layer doesn't exist
   const el = document.createElement('span');
   el.textContent = emoji;
   el.style.position = 'absolute';
   el.style.left = `${x}px`;
   el.style.top  = `${baselineY - fontSize}px`;
   el.style.fontSize = `${fontSize}px`;
-  document.getElementById(layerId).appendChild(el);
+  layer.appendChild(el);
 }
+
 
 // generate a procedure starting at offsetX
 function generateProcedure(startX) {
