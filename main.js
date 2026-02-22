@@ -599,16 +599,15 @@ const Chasers = {
         layer: new RuntimeLayer(Layers[layer]),
       }));
 
-      // compute bands bottom-up
+      // compute bands using absolute bottom anchoring (height = top-from-bottom)
       this.bands.clear();
-      let yCursor = vp.h;
-
+      
       for (const { layer } of this.layers) {
-        const h = layer.height ?? Math.floor(vp.h / this.layers.length);
-        const yBottom = yCursor;
-        const yTop = Math.max(0, yBottom - h);
-        yCursor = yTop;
-
+        const topFromBottom = layer.height ?? vp.h;
+      
+        const yTop = clamp(vp.h - topFromBottom, 0, vp.h);
+        const yBottom = vp.h;
+      
         const band = { yTop, yBottom };
         this.bands.set(layer.name, band);
         layer.init(band, vp);
