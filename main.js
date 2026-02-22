@@ -17,7 +17,8 @@
   const rand = (a, b) => Math.random() * (b - a) + a;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const eventThisFrame = (pPerSec, dtMs) => Math.random() < (pPerSec * dtMs) / 1000;
-
+  const WORLD_SCROLL_PX_PER_SEC = 140; // tune
+   
   const isTouchDevice =
     "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
 
@@ -112,8 +113,8 @@
 
   // 1) MovementBehavior (shared across mobiles)
 const Behaviors = {
-  traffic: { spawn: { fromLeftP: 0.5 }, speed: { min: 90, max: 280 }, events: { changeSpeedPPerSec: 0.35, accelP: 0.55, accelFactor: { min: 1.05, max: 1.28 }, decelFactor: { min: 0.75, max: 0.95 }, pausePPerSec: 0.12, pauseMs: { min: 250, max: 1100 }, turnBackPPerSec: 0.08 }, jitter: { ampX: 0.8, ampY: 1.8, freqHz: { min: 6, max: 12 } }, bounds: { turnBackAtEdgeP: 0.55, marginFactor: 2.0 }, ttlMs: 22000 },
-  personWalk: { spawn: { fromLeftP: 0.5 }, speed: { min: 35, max: 95 }, events: { changeSpeedPPerSec: 0.22, accelP: 0.50, accelFactor: { min: 1.03, max: 1.14 }, decelFactor: { min: 0.82, max: 0.97 }, pausePPerSec: 0.18, pauseMs: { min: 350, max: 2000 }, turnBackPPerSec: 0.05 }, jitter: { ampX: 0.35, ampY: 1.25, freqHz: { min: 2.0, max: 4.0 } }, bounds: { turnBackAtEdgeP: 0.75, marginFactor: 2.0 }, ttlMs: 30000 },
+  traffic: { spawn: { fromLeftP: 0.5 }, speed: { min: 90, max: 280 }, events: { changeSpeedPPerSec: 0.35, accelP: 0.55, accelFactor: { min: 1.05, max: 1.28 }, decelFactor: { min: 0.75, max: 0.95 }, pausePPerSec: 0.12, pauseMs: { min: 250, max: 1100 }, turnBackPPerSec: 0.08 }, jitter: { ampX: 0.8, ampY: 1.8, freqHz: { min: 3, max: 8 } }, bounds: { turnBackAtEdgeP: 0.55, marginFactor: 2.0 }, ttlMs: 22000 },
+  personWalk: { spawn: { fromLeftP: 0.5 }, speed: { min: 35, max: 95 }, events: { changeSpeedPPerSec: 0.22, accelP: 0.50, accelFactor: { min: 1.03, max: 1.14 }, decelFactor: { min: 0.82, max: 0.97 }, pausePPerSec: 0.18, pauseMs: { min: 350, max: 2000 }, turnBackPPerSec: 0.05 }, jitter: { ampX: 0.35, ampY: 1.25, freqHz: { min: 0.8, max: 1.5 } }, bounds: { turnBackAtEdgeP: 0.75, marginFactor: 2.0 }, ttlMs: 30000 },
   floaty: { spawn: { fromLeftP: 0.5 }, speed: { min: 15, max: 90 }, events: { changeSpeedPPerSec: 0.12, accelP: 0.5, accelFactor: { min: 1.02, max: 1.12 }, decelFactor: { min: 0.82, max: 0.98 }, pausePPerSec: 0.05, pauseMs: { min: 200, max: 900 }, turnBackPPerSec: 0.03 }, jitter: { ampX: 0.5, ampY: 1.4, freqHz: { min: 3, max: 7 } }, bounds: { turnBackAtEdgeP: 0.35, marginFactor: 2.0 }, ttlMs: 26000 }
 };
 
@@ -121,8 +122,8 @@ const Behaviors = {
   // NOTE: emojis are assumed to be "left-facing" visually by default.
   const MobileElements = {
     wbike: { emoji: "🚴‍♀️", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
-    pwalk: { emoji: "🚶", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
-    pwalk2: { emoji: "🚶🏾", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
+    pwalk: { emoji: "🚶", fontSize: 32, ratePerSec: 1.2, behavior: "personWalk" },
+    pwalk2: { emoji: "🚶🏾", fontSize: 32, ratePerSec: 1.2, behavior: "personWalk" },
     car: { emoji: "🚗", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
     rickshaw: { emoji: "🛺", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
     ambulance: { emoji: "🚑", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
@@ -135,22 +136,26 @@ const Behaviors = {
     utility: { emoji: "🚙", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
     tractor: { emoji: "🚜", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
     police: { emoji: "🚓", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
-    car: { emoji: "🚗", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
+    car2: { emoji: "🚗🚗", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
     bus: { emoji: "🚌", fontSize: 36, ratePerSec: 0.5, behavior: "traffic" },
     drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
     parachute: { emoji: "🪂", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
     helico: { emoji: "🚁", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    dog: { emoji: "🐕", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    bison: { emoji: "🦬", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    cow: { emoji: "🐄", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    deer: { emoji: "🦌", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    pig: { emoji: "🐖", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    ram: { emoji: "🐏", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    camel: { emoji: "🐪", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    giraffe: { emoji: "🦒", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    sauropod: { emoji: "🦕", fontSize: 70, ratePerSec: 0.7, behavior: "floaty" },
-    trex: { emoji: "🦖", fontSize: 50, ratePerSec: 0.7, behavior: "floaty" },
+    drone2: { emoji: "🛸🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    dog: { emoji: "🐕", fontSize: 28, ratePerSec: 0.7, behavior: "personWalk" },
+    bison: { emoji: "🦬", fontSize: 28, ratePerSec: 0.7, behavior: "personWalk" },
+    cow: { emoji: "🐄", fontSize: 28, ratePerSec: 0.7, behavior: "personWalk" },
+    deer: { emoji: "🦌", fontSize: 28, ratePerSec: 0.7, behavior: "personWalk" },
+    pig: { emoji: "🐖", fontSize: 28, ratePerSec: 0.7, behavior: "personWalk" },
+    ram: { emoji: "🐏", fontSize: 28, ratePerSec: 0.7, behavior: "personWalk" },
+    camel: { emoji: "🐪", fontSize: 28, ratePerSec: 0.7, behavior: "personWalk" },
+    giraffe: { emoji: "🦒", fontSize: 28, ratePerSec: 0.7, behavior: "personWalk" },
+    dragon: { emoji: "🐉", fontSize: 28, ratePerSec: 0.7, behavior: "personWalk" },
+    phoenix: { emoji: "🐦‍🔥", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    mermaid: { emoji: "🧜‍♀️", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" }, 
+    fairy: { emoji: "🧚", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },  
+    sauropod: { emoji: "🦕", fontSize: 120, ratePerSec: 0.7, behavior: "personWalk" },
+    trex: { emoji: "🦖", fontSize: 70, ratePerSec: 0.7, behavior: "personWalk" },
     bat: { emoji: "🦇", fontSize: 28, ratePerSec: 0.9, behavior: "floaty" }, 
     eagle: { emoji: "🦅", fontSize: 28, ratePerSec: 0.9, behavior: "floaty" }, 
     bird: { emoji: "🕊️", fontSize: 28, ratePerSec: 0.9, behavior: "floaty" }
@@ -160,64 +165,68 @@ const Behaviors = {
   // widthPx is used for NON-stackable placement (avoid overlap).
   const FixedElements = {
   factory:  { emoji: "🏭", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  stadium:  { emoji: "🏟️", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  classicalb:  { emoji: "🏛️", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  hut:  { emoji: "🛖", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  houses:  { emoji: "🏘️", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  dhouse:  { emoji: "🏚️", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
+  stadium:  { emoji: "🏟️", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
+  classicalb:  { emoji: "🏛️", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
+  hut:  { emoji: "🛖", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
+  houses:  { emoji: "🏘️", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
+  dhouse:  { emoji: "🏚️", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
   house:  { emoji: "🏠", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  ghouse:  { emoji: "🏡", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  store:  { emoji: "🏪", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  school:  { emoji: "🏫", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  dstore:  { emoji: "🏬", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  jcastle:  { emoji: "🏯", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  castle:  { emoji: "🏰", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
+  ghouse:  { emoji: "🏡", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
+  store:  { emoji: "🏪", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
+  school:  { emoji: "🏫", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
+  dstore:  { emoji: "🏬", fontSize: 80, probability: 0.15, stackable: false, widthPx: 140 },
+  jcastle:  { emoji: "🏯", fontSize: 200, probability: 0.20, stackable: false, widthPx: 140 },
+  castle:  { emoji: "🏰", fontSize: 200, probability: 0.20, stackable: false, widthPx: 140 },
   wchurch:  { emoji: "💒", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   ttower:  { emoji: "🗼", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   church:  { emoji: "⛪", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   mosque:  { emoji: "🕌", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   htemple:  { emoji: "🛕", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   synagogue:  { emoji: "🕍", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  shrine:  { emoji: "⛩️", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  fountain:  { emoji: "⛲", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  tent:  { emoji: "⛺", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
+  shrine:  { emoji: "⛩️", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
+  fountain:  { emoji: "⛲", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
+  tent:  { emoji: "⛺", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
   fwheel:  { emoji: "🎡", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   circus:  { emoji: "🎪", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   moai:  { emoji: "🗿", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  scmountain:  { emoji: "🏔️", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  mountain:  { emoji: "⛰️", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  volcano:  { emoji: "🌋", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  fujisan:  { emoji: "🗻", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  hotel:  { emoji: "🏨", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  bank:  { emoji: "🏦", fontSize: 100, probability: 0.35, stackable: false, widthPx: 140 },
-  hostpital:  { emoji: "🏥", fontSize: 100, probability: 0.35, stackable: false, widthPx: 140 },
-  poffice:  { emoji: "🏣", fontSize: 100, probability: 0.35, stackable: false, widthPx: 140 },
-  office: { emoji: "🏢", fontSize: 150, probability: 0.30, stackable: false, widthPx: 120 },
+  scmountain:  { emoji: "🏔️", fontSize: 200, probability: 0.7, stackable: false, widthPx: 140 },
+  mountain:  { emoji: "⛰️", fontSize: 200, probability: 0.7, stackable: false, widthPx: 140 },
+  volcano:  { emoji: "🌋", fontSize:200, probability: 0.35, stackable: false, widthPx: 140 },
+  fujisan:  { emoji: "🗻", fontSize: 200, probability: 0.35, stackable: false, widthPx: 140 },
+  hotel:  { emoji: "🏨", fontSize: 150, probability: 0.15, stackable: false, widthPx: 140 },
+  bank:  { emoji: "🏦", fontSize: 200, probability: 0.15, stackable: false, widthPx: 140 },
+  hospital:  { emoji: "🏥", fontSize: 200, probability: 0.15, stackable: false, widthPx: 140 },
+  poffice:  { emoji: "🏣", fontSize: 200, probability: 0.15, stackable: false, widthPx: 140 },
+  office: { emoji: "🏢", fontSize: 200, probability: 0.30, stackable: false, widthPx: 120 },
   dtree:     { emoji: "🌳", fontSize: 56, probability: 0.65, stackable: true,  widthPx: 70  },
-  smushrooom:  { emoji: "🍄", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
+  smushroom:  { emoji: "🍄", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   gmushroom:  { emoji: "🍄", fontSize: 70, probability: 0.35, stackable: false, widthPx: 140 },
-  etree:  { emoji: "🌲", fontSize: 64, probability: 0.5, stackable: false, widthPx: 140 },
-  ptree:  { emoji: "🌴", fontSize: 64, probability: 0.5, stackable: false, widthPx: 140 },
-  cactus:  { emoji: "🌵", fontSize: 64, probability: 0.5, stackable: false, widthPx: 140 },
-  ltree:  { emoji: "🪾", fontSize: 64, probability: 0.5, stackable: false, widthPx: 140 },
-  rock:  { emoji: "🪨", fontSize: 10, probability: 0.05, stackable: false, widthPx: 140 },
-  log:  { emoji: "🪵", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  playground:  { emoji: "🛝", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
+  etree:  { emoji: "🌲", fontSize: 80, probability: 0.5, stackable: false, widthPx: 140 },
+  ptree:  { emoji: "🌴", fontSize: 80, probability: 0.5, stackable: false, widthPx: 140 },
+  cactus:  { emoji: "🌵", fontSize: 80, probability: 0.5, stackable: false, widthPx: 140 },
+  ltree:  { emoji: "🪾", fontSize: 80, probability: 0.15, stackable: false, widthPx: 140 },
+  rock:  { emoji: "🪨", fontSize: 10, probability: 0.15, stackable: false, widthPx: 140 },
+  log:  { emoji: "🪵", fontSize: 10, probability: 0.15, stackable: false, widthPx: 140 },
+  peacock:  { emoji: "🦚", fontSize: 64, probability: 0.15, stackable: false, widthPx: 140 },
   rat:  { emoji: "🐀", fontSize: 12, probability: 0.15, stackable: false, widthPx: 140 },
   chipmunk:  { emoji: "🐿️", fontSize: 12, probability: 0.15, stackable: false, widthPx: 140 },
-  playground:  { emoji: "🛝", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  cloud:    { emoji: "☁️", fontSize: 52, probability: 0.65, stackable: true,  widthPx: 90  }
+  playground:  { emoji: "🛝", fontSize: 20, probability: 0.35, stackable: false, widthPx: 140 },
+  cloud:    { emoji: "☁️", fontSize: 100, probability: 0.65, stackable: true,  widthPx: 90  }
   };
 
   // 4) LayerDef: name + height + list of mobiles/fixed
 const Layers = {
-  sky:  { name: "sky",  height: 700, mobiles: ["helico", "parachute"], fixed: ["cloud"] },
-  mountains: { name: "mountains", height: 500, mobiles: [], fixed: ["mountain"] },
-  sauropod: { name: "sauropod", height: 300, mobiles: ["sauropod","trex"],fixed: ["gmushroom"] }, 
-  city: { name: "city", height: 260, mobiles: ["car","pwalk"],fixed: ["office", "factory","hospital"] },
-  city2: { name: "city2", height: 200, mobiles: ["car","pwalk"],fixed: ["building", "factory", "dtree"] },
-  woods: { name: "woods", height: 170, mobiles: [],fixed: ["building", "factory", "tree"] },
-  road: { name: "road", height: 250, mobiles: ["car", "bus","ambulance"],     fixed: ["tree","police"] }
+  sky:  { name: "sky",  height: 700, mobiles: ["helico", "parachute","eagle"], fixed: ["cloud"] },
+  msky:  { name: "msky",  height: 700, mobiles: ["bat", "phoenix","eagle"], fixed: ["cloud"] }, 
+  mountains: { name: "mountains", height: 500, mobiles: ["pwalk"], fixed: ["mountain","scmountain"] },
+  sauropod: { name: "sauropod", height: 300, mobiles: ["sauropod","trex"],fixed: ["gmushroom","peacock"] }, 
+  mcastle: { name: "mcastle", height: 260, mobiles: [],fixed: ["castle","jcastle"] },
+  city: { name: "city", height: 260, mobiles: ["car","pwalk"],fixed: ["office", "factory","hotel","bank","hospital"] },
+  city2: { name: "city2", height: 200, mobiles: ["car","pwalk"],fixed: ["house","poffice","store", "factory", "dtree","fountain"] },
+  woods: { name: "woods", height: 170, mobiles: ["deer","wbike"],fixed: ["tent", "dtree", "etree","smushroom","log"] },
+  mwoods: { name: "mwoods", height: 170, mobiles: ["deer"],fixed: ["gmushroom", "etree", "ptree","ltree","shrine"] },
+  road: { name: "road", height: 250, mobiles: ["car", "bus","ambulance"],     fixed: ["dtree","police"] },
+  mroad: { name: "mroad", height: 250, mobiles: ["mermaid", "dragon","fairy"],     fixed: ["ptree","chipmunk","rat","peacock"] } 
 };
 
   // 5) PlayerDef: emoji + fontSize
@@ -232,15 +241,16 @@ const Chasers = {
   tiger: { emoji: "🐅", fontSize: 50, speed: 160, jitter: { ampX: 0.5, ampY: 0.5, freqHz: { min: 4, max: 9 } }, arriveRadius: 10 },
   leopard: { emoji: "🐆", fontSize: 50, speed: 160, jitter: { ampX: 0.5, ampY: 0.5, freqHz: { min: 4, max: 9 } }, arriveRadius: 10 },
   alien: { emoji: "👾", fontSize: 34, speed: 160, jitter: { ampX: 0.5, ampY: 0.5, freqHz: { min: 4, max: 9 } }, arriveRadius: 10 },
-  trex: { emoji: "🦖", fontSize: 150, speed: 190, jitter: { ampX: 0.4, ampY: 0.4, freqHz: { min: 5, max: 10 } }, arriveRadius: 12 }
+  trex: { emoji: "🦖", fontSize: 120, speed: 190, jitter: { ampX: 0.4, ampY: 0.4, freqHz: { min: 5, max: 10 } }, arriveRadius: 12 }
 };
 
   // LevelDef: duration + layerRefs with z + player + optional chaser
   const GameDef = {
   levels: [
-    { name: "Level 1 : forest", durationMs: 12000, player: "runner", chaser: "tiger", layers: [{ layer: "sky", z: 10 },{ layer: "mountains", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] },
-    { name: "Level 2 : jungle", durationMs: 15000, player: "bike", chaser: "alien", layers: [{ layer: "sky", z: 10 },{ layer: "mountains", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] },
-    { name: "Level 3 : dinosaur", durationMs: 18000, player: "car", chaser: "trex", layers: [{ layer: "sky", z: 10 },{ layer: "mountains", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] }
+    { name: "Level 1 : forest", durationMs: 120000, player: "runner", chaser: "tiger", layers: [{ layer: "sky", z: 10 },{ layer: "mountains", z: 10 }, { layer: "city", z: 20 }, { layer: "city2", z: 20 }, { layer: "road", z: 30 }] },
+    { name: "Level 2 : jungle", durationMs: 150000, player: "bike", chaser: "alien", layers: [{ layer: "sky", z: 10 },{ layer: "mountains", z: 10 }, { layer: "city", z: 20 }, { layer: "woods", z: 30 }] },
+    { name: "Level 3 : dinosaur", durationMs: 180000, player: "car", chaser: "trex", layers: [{ layer: "sky", z: 10 },{ layer: "mountains", z: 10 }, { layer: "sauropod", z: 20 }, { layer: "woods", z: 30 }] },
+    { name: "Level 4 : fantasy", durationMs: 180000, player: "car", chaser: "leopard", layers: [{ layer: "msky", z: 10 },{ layer: "mountains", z: 10 }, { layer: "mcastle", z: 20 }, { layer: "mwoods", z: 30 }] } 
   ]
 };
   // -----------------------------
@@ -430,22 +440,18 @@ const Chasers = {
     }
   }
 
-  function drawMobile(ctx, it) {
-    const { ox, oy } = jitterOffset(
-      it.tMs,
-      it.behavior?.jitter,
-      it.jitterFreq,
-      it.jitterPhaseX,
-      it.jitterPhaseY
-    );
+function drawMobile(ctx, it, worldX) {
+  const { ox, oy } = jitterOffset(
+    it.tMs,
+    it.behavior?.jitter,
+    it.jitterFreq,
+    it.jitterPhaseX,
+    it.jitterPhaseY
+  );
 
-    // Facing rule:
-    // - left movement => no mirror (default emoji assumed left-facing)
-    // - right movement => mirror
-    const facing = it.vx > 0 ? 1 : -1;
-
-    drawEmojiFacing(ctx, it.emoji, it.x + ox, it.y + oy, it.fontSize, facing);
-  }
+  const facing = it.vx > 0 ? 1 : -1;
+  drawEmojiFacing(ctx, it.emoji, it.x + worldX + ox, it.y + oy, it.fontSize, facing);
+}
 
   // -----------------------------
   // Player + Chaser (also mirrored by direction if you later move player)
@@ -459,7 +465,7 @@ const Chasers = {
       x: vp.w * 0.5,
       y: vp.h * 0.66,
       tMs: 0,
-      vx: 0, // reserved if you later add player movement
+      vx: 1, // reserved if you later add player movement
     };
   }
 
@@ -528,55 +534,52 @@ const Chasers = {
   // -----------------------------
   // Runtime Layer
   // -----------------------------
-  class RuntimeLayer {
-    constructor(layerDef) {
-      this.name = layerDef.name;
-      this.height = layerDef.height;
-      this.mobileKeys = layerDef.mobiles ?? [];
-      this.fixedKeys = layerDef.fixed ?? [];
-      this.instances = [];
-    }
-
-    init(band, vp) {
-      this.instances = placeFixedInBand(this.fixedKeys, band, vp);
-    }
-
-    update(dtMs, band, vp) {
-      // spawn mobiles
-      for (const key of this.mobileKeys) {
-        const def = MobileElements[key];
-        if (!def) continue;
-
-        if (eventThisFrame(def.ratePerSec ?? 0, dtMs)) {
-          const inst = createMobileInstance(key, band, vp);
-          if (inst) this.instances.push(inst);
-        }
-      }
-
-      // update instances
-      for (const it of this.instances) {
-        it.tMs += dtMs;
-        if (it.type === "mobile") updateMobile(it, dtMs, vp);
-      }
-
-      // cull expired mobiles
-      this.instances = this.instances.filter((it) => it.type === "fixed" || it.ttlMs > 0);
-    }
-
-    draw(ctx) {
-      for (const it of this.instances) {
-        if (it.type === "fixed") drawEmoji(ctx, it.emoji, it.x, it.y, it.fontSize);
-        else if (it.type === "mobile") drawMobile(ctx, it);
-      }
-    }
+class RuntimeLayer {
+  constructor(layerDef) {
+    this.name = layerDef.name;
+    this.height = layerDef.height;
+    this.mobileKeys = layerDef.mobiles ?? [];
+    this.fixedKeys = layerDef.fixed ?? [];
+    this.instances = [];
   }
 
+  init(band, vp) {
+    this.instances = placeFixedInBand(this.fixedKeys, band, vp);
+  }
+
+  update(dtMs, band, vp) {
+    for (const key of this.mobileKeys) {
+      const def = MobileElements[key];
+      if (!def) continue;
+
+      if (eventThisFrame(def.ratePerSec ?? 0, dtMs)) {
+        const inst = createMobileInstance(key, band, vp);
+        if (inst) this.instances.push(inst);
+      }
+    }
+
+    for (const it of this.instances) {
+      it.tMs += dtMs;
+      if (it.type === "mobile") updateMobile(it, dtMs, vp);
+    }
+
+    this.instances = this.instances.filter((it) => it.type === "fixed" || it.ttlMs > 0);
+  }
+
+  draw(ctx, worldX) {
+    for (const it of this.instances) {
+      if (it.type === "fixed") drawEmoji(ctx, it.emoji, it.x + worldX, it.y, it.fontSize);
+      else if (it.type === "mobile") drawMobile(ctx, it, worldX);
+    }
+  }
+}
   // -----------------------------
   // Runtime Level
   // -----------------------------
   class RuntimeLevel {
     constructor(levelDef) {
       this.name = levelDef.name;
+      this.worldX = 0;
       this.durationMs = levelDef.durationMs;
       this.layerRefs = [...levelDef.layers].sort((a, b) => a.z - b.z);
       this.playerKey = levelDef.player;
@@ -592,7 +595,7 @@ const Chasers = {
 
     start(vp) {
       this.elapsedMs = 0;
-
+      this.worldX = 0;
       // resolve layers
       this.layers = this.layerRefs.map(({ layer, z }) => ({
         z,
@@ -620,7 +623,8 @@ const Chasers = {
 
     update(dtMs, vp) {
       this.elapsedMs += dtMs;
-
+      this.worldX -= WORLD_SCROLL_PX_PER_SEC * (dtMs / 1000);
+       
       for (const { layer } of this.layers) {
         const band = this.bands.get(layer.name) ?? { yTop: 0, yBottom: vp.h };
         layer.update(dtMs, band, vp);
@@ -640,7 +644,7 @@ const Chasers = {
       ctx.fillRect(0, 0, vp.w, vp.h);
 
       // layers
-      for (const { layer } of this.layers) layer.draw(ctx);
+      for (const { layer } of this.layers) layer.draw(ctx, this.worldX);
 
       // entities on top
       if (this.player) drawPlayer(ctx, this.player);
