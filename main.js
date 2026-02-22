@@ -280,9 +280,9 @@ personWalk: {
   // 4) LayerDef: name + height + list of mobiles/fixed
 const Layers = {
   sky:  { name: "sky",  height: 220, mobiles: ["drone", "bird"], fixed: ["cloud"] },
-  mountains: { name: "city", height: 260, mobiles: [],                 fixed: ["building", "factory", "tree"] },
-  city: { name: "city", height: 260, mobiles: [],                 fixed: ["building", "factory", "tree"] },
-  woods: { name: "city", height: 260, mobiles: [],                 fixed: ["building", "factory", "tree"] },
+  mountains: { name: "mountains", height: 260, mobiles: [],                 fixed: ["mountain"] },
+  city: { name: "city", height: 260, mobiles: ["car","pwalk"],                 fixed: ["building", "factory", "tree"] },
+  woods: { name: "woods", height: 260, mobiles: [],                 fixed: ["building", "factory", "tree"] },
   road: { name: "road", height: 320, mobiles: ["car", "bus"],     fixed: ["tree"] },
 };
 
@@ -302,8 +302,8 @@ const Layers = {
       jitter: { ampX: 0.5, ampY: 0.5, freqHz: { min: 4, max: 9 } },
       arriveRadius: 10,
     },
-    wolf: {
-      emoji: "🐺",
+    trex: {
+      emoji: "🦖",
       fontSize: 34,
       speed: 190,
       jitter: { ampX: 0.4, ampY: 0.4, freqHz: { min: 5, max: 10 } },
@@ -340,7 +340,7 @@ const Layers = {
         name: "Level 3",
         durationMs: 18000,
         player: "robot",
-        chaser: "wolf",
+        chaser: "trex",
         layers: [
           { layer: "sky", z: 10 },
           { layer: "city", z: 20 },
