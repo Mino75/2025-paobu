@@ -193,15 +193,18 @@ const Behaviors = {
   office: { emoji: "🏢", fontSize: 60, probability: 0.30, stackable: false, widthPx: 120 },
   dtree:     { emoji: "🌳", fontSize: 56, probability: 0.65, stackable: true,  widthPx: 70  },
   smushrooom:  { emoji: "🍄", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  gmushroom:  { emoji: "🍄", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  etree:  { emoji: "🌲", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  ptree:  { emoji: "🌴", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  cactus:  { emoji: "🌵", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  ltree:  { emoji: "🪾", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  rock:  { emoji: "🪨", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
+  gmushroom:  { emoji: "🍄", fontSize: 70, probability: 0.35, stackable: false, widthPx: 140 },
+  etree:  { emoji: "🌲", fontSize: 64, probability: 0.5, stackable: false, widthPx: 140 },
+  ptree:  { emoji: "🌴", fontSize: 64, probability: 0.5, stackable: false, widthPx: 140 },
+  cactus:  { emoji: "🌵", fontSize: 64, probability: 0.5, stackable: false, widthPx: 140 },
+  ltree:  { emoji: "🪾", fontSize: 64, probability: 0.5, stackable: false, widthPx: 140 },
+  rock:  { emoji: "🪨", fontSize: 10, probability: 0.05, stackable: false, widthPx: 140 },
   log:  { emoji: "🪵", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   playground:  { emoji: "🛝", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  cloud:    { emoji: "☁️", fontSize: 52, probability: 0.65, stackable: true,  widthPx: 90  },
+  rat:  { emoji: "🐀", fontSize: 12, probability: 0.15, stackable: false, widthPx: 140 },
+  chipmunk:  { emoji: "🐿️", fontSize: 12, probability: 0.15, stackable: false, widthPx: 140 },
+  playground:  { emoji: "🛝", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
+  cloud:    { emoji: "☁️", fontSize: 52, probability: 0.65, stackable: true,  widthPx: 90  }
   };
 
   // 4) LayerDef: name + height + list of mobiles/fixed
@@ -212,7 +215,7 @@ const Layers = {
   city: { name: "city", height: 260, mobiles: ["car","pwalk"],fixed: ["building", "factory", "dtree"] },
   city2: { name: "city", height: 260, mobiles: ["car","pwalk"],fixed: ["building", "factory", "dtree"] },
   woods: { name: "woods", height: 260, mobiles: [],fixed: ["building", "factory", "tree"] },
-  road: { name: "road", height: 320, mobiles: ["car", "bus"],     fixed: ["tree"] },
+  road: { name: "road", height: 320, mobiles: ["car", "bus","ambulance"],     fixed: ["tree","police"] },
 };
 
   // 5) PlayerDef: emoji + fontSize
