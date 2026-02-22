@@ -189,10 +189,10 @@ const Behaviors = {
   volcano:  { emoji: "🌋", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   fujisan:  { emoji: "🗻", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   hotel:  { emoji: "🏨", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  bank:  { emoji: "🏦", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  hostpital:  { emoji: "🏥", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  poffice:  { emoji: "🏣", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
-  office: { emoji: "🏢", fontSize: 60, probability: 0.30, stackable: false, widthPx: 120 },
+  bank:  { emoji: "🏦", fontSize: 100, probability: 0.35, stackable: false, widthPx: 140 },
+  hostpital:  { emoji: "🏥", fontSize: 100, probability: 0.35, stackable: false, widthPx: 140 },
+  poffice:  { emoji: "🏣", fontSize: 100, probability: 0.35, stackable: false, widthPx: 140 },
+  office: { emoji: "🏢", fontSize: 150, probability: 0.30, stackable: false, widthPx: 120 },
   dtree:     { emoji: "🌳", fontSize: 56, probability: 0.65, stackable: true,  widthPx: 70  },
   smushrooom:  { emoji: "🍄", fontSize: 64, probability: 0.35, stackable: false, widthPx: 140 },
   gmushroom:  { emoji: "🍄", fontSize: 70, probability: 0.35, stackable: false, widthPx: 140 },
@@ -214,7 +214,7 @@ const Layers = {
   sky:  { name: "sky",  height: 700, mobiles: ["helico", "parachute"], fixed: ["cloud"] },
   mountains: { name: "mountains", height: 500, mobiles: [], fixed: ["mountain"] },
   sauropod: { name: "sauropod", height: 300, mobiles: ["sauropod","trex"],fixed: ["gmushroom"] }, 
-  city: { name: "city", height: 260, mobiles: ["car","pwalk"],fixed: ["building", "factory", "dtree"] },
+  city: { name: "city", height: 260, mobiles: ["car","pwalk"],fixed: ["office", "factory","hospital"] },
   city2: { name: "city2", height: 200, mobiles: ["car","pwalk"],fixed: ["building", "factory", "dtree"] },
   woods: { name: "woods", height: 170, mobiles: [],fixed: ["building", "factory", "tree"] },
   road: { name: "road", height: 250, mobiles: ["car", "bus","ambulance"],     fixed: ["tree","police"] }
@@ -238,9 +238,9 @@ const Chasers = {
   // LevelDef: duration + layerRefs with z + player + optional chaser
   const GameDef = {
   levels: [
-    { name: "Level 1 : forest", durationMs: 12000, player: "runner", chaser: "tiger", layers: [{ layer: "sky", z: 10 },{ layer: "mountain", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] },
-    { name: "Level 2 : jungle", durationMs: 15000, player: "bike", chaser: "alien", layers: [{ layer: "sky", z: 10 },{ layer: "mountain", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] },
-    { name: "Level 3 : dinosaur", durationMs: 18000, player: "car", chaser: "trex", layers: [{ layer: "sky", z: 10 },{ layer: "mountain", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] }
+    { name: "Level 1 : forest", durationMs: 12000, player: "runner", chaser: "tiger", layers: [{ layer: "sky", z: 10 },{ layer: "mountains", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] },
+    { name: "Level 2 : jungle", durationMs: 15000, player: "bike", chaser: "alien", layers: [{ layer: "sky", z: 10 },{ layer: "mountains", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] },
+    { name: "Level 3 : dinosaur", durationMs: 18000, player: "car", chaser: "trex", layers: [{ layer: "sky", z: 10 },{ layer: "mountains", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] }
   ]
 };
   // -----------------------------
