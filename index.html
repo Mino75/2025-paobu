@@ -1,25 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Emoji Parallax Game</title>
-  <!-- Injects the embedded CSS -->
-  <script src="styles.js"></script>
-</head>
-<body>
-  <div class="scene">
-    <div class="layer" id="layer1"></div>
-    <div class="layer" id="layer2"></div>
-    <div class="layer" id="layer3"></div>
-    <div class="layer" id="layer4"></div>
-    <div class="layer" id="layer5"></div>
-    <div class="layer" id="layer6"></div>
-    <div class="layer" id="layer7"></div>
-    <div class="layer" id="layer8"></div>
-    <div class="layer" id="layer9"></div>
-    <div class="layer" id="layer10"></div> <!-- main character -->
-  </div>
-  <!-- Main logic: loads elements.json, populates layers & parallax -->
-  <script src="main.js"></script>
-</body>
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Emoji Game</title>
+    <style>
+      html, body { margin:0; height:100%; overflow:hidden; background:#0a0a0e; }
+    </style>
+  </head>
+  <body>
+    <script src="main.js" defer></script>
+  </body>
 </html>
