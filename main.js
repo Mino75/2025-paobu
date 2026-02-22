@@ -141,17 +141,19 @@ const Behaviors = {
     parachute: { emoji: "🪂", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
     helico: { emoji: "🚁", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
     drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    dog: { emoji: "🐕", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    bison: { emoji: "🦬", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    cow: { emoji: "🐄", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    deer: { emoji: "🦌", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    pig: { emoji: "🐖", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    ram: { emoji: "🐏", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    camel: { emoji: "🐪", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    giraffe: { emoji: "🦒", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
     sauropod: { emoji: "🦕", fontSize: 70, ratePerSec: 0.7, behavior: "floaty" },
     trex: { emoji: "🦖", fontSize: 50, ratePerSec: 0.7, behavior: "floaty" },
-    bird: { emoji: "🕊️", fontSize: 28, ratePerSec: 0.9, behavior: "floaty" },
+    bat: { emoji: "🦇", fontSize: 28, ratePerSec: 0.9, behavior: "floaty" }, 
+    eagle: { emoji: "🦅", fontSize: 28, ratePerSec: 0.9, behavior: "floaty" }, 
+    bird: { emoji: "🕊️", fontSize: 28, ratePerSec: 0.9, behavior: "floaty" }
   };
 
   // 3) FixedElementDef: emoji + fontSize + probability + stackable + widthPx
@@ -213,9 +215,9 @@ const Layers = {
   mountains: { name: "mountains", height: 500, mobiles: [], fixed: ["mountain"] },
   sauropod: { name: "sauropod", height: 300, mobiles: ["sauropod","trex"],fixed: ["gmushroom"] }, 
   city: { name: "city", height: 260, mobiles: ["car","pwalk"],fixed: ["building", "factory", "dtree"] },
-  city2: { name: "city", height: 260, mobiles: ["car","pwalk"],fixed: ["building", "factory", "dtree"] },
-  woods: { name: "woods", height: 260, mobiles: [],fixed: ["building", "factory", "tree"] },
-  road: { name: "road", height: 320, mobiles: ["car", "bus","ambulance"],     fixed: ["tree","police"] },
+  city2: { name: "city2", height: 200, mobiles: ["car","pwalk"],fixed: ["building", "factory", "dtree"] },
+  woods: { name: "woods", height: 170, mobiles: [],fixed: ["building", "factory", "tree"] },
+  road: { name: "road", height: 250, mobiles: ["car", "bus","ambulance"],     fixed: ["tree","police"] }
 };
 
   // 5) PlayerDef: emoji + fontSize
