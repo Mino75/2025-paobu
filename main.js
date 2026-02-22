@@ -111,84 +111,11 @@
   // -----------------------------
 
   // 1) MovementBehavior (shared across mobiles)
-  const Behaviors = {
-    traffic: {
-      spawn: { fromLeftP: 0.5 }, // initial direction decision
-      speed: { min: 90, max: 280 },
-
-      events: {
-        changeSpeedPPerSec: 0.35,
-        accelP: 0.55,
-        accelFactor: { min: 1.05, max: 1.28 },
-        decelFactor: { min: 0.75, max: 0.95 },
-
-        pausePPerSec: 0.12,
-        pauseMs: { min: 250, max: 1100 },
-
-        turnBackPPerSec: 0.08,
-      },
-
-      jitter: { ampX: 0.8, ampY: 1.8, freqHz: { min: 6, max: 12 } },
-
-      bounds: {
-        turnBackAtEdgeP: 0.55,
-        marginFactor: 2.0, // margin = fontSize * marginFactor
-      },
-
-      ttlMs: 22000,
-    },
-
-personWalk: {
-    spawn: { fromLeftP: 0.5 },
-
-    // Humans: slower than vehicles
-    speed: { min: 35, max: 95 },
-
-    events: {
-      // People adjust pace sometimes
-      changeSpeedPPerSec: 0.22,
-      accelP: 0.50,
-      accelFactor: { min: 1.03, max: 1.14 },
-      decelFactor: { min: 0.82, max: 0.97 },
-
-      // People stop more often (look around, phone, etc.)
-      pausePPerSec: 0.18,
-      pauseMs: { min: 350, max: 2000 },
-
-      // Occasional U-turn (missed direction, etc.)
-      turnBackPPerSec: 0.05,
-    },
-
-    // "Walking bob" + micro jitter
-    // ampY a bit higher than vehicles to simulate stepping.
-    jitter: { ampX: 0.35, ampY: 1.25, freqHz: { min: 2.0, max: 4.0 } },
-
-    bounds: {
-      // More likely to turn back at edges than disappear
-      turnBackAtEdgeP: 0.75,
-      marginFactor: 2.0,
-    },
-
-    ttlMs: 30000,
-  },
-   
-    floaty: {
-      spawn: { fromLeftP: 0.5 },
-      speed: { min: 15, max: 90 },
-      events: {
-        changeSpeedPPerSec: 0.12,
-        accelP: 0.5,
-        accelFactor: { min: 1.02, max: 1.12 },
-        decelFactor: { min: 0.82, max: 0.98 },
-        pausePPerSec: 0.05,
-        pauseMs: { min: 200, max: 900 },
-        turnBackPPerSec: 0.03,
-      },
-      jitter: { ampX: 0.5, ampY: 1.4, freqHz: { min: 3, max: 7 } },
-      bounds: { turnBackAtEdgeP: 0.35, marginFactor: 2.0 },
-      ttlMs: 26000,
-    },
-  };
+const Behaviors = {
+  traffic: { spawn: { fromLeftP: 0.5 }, speed: { min: 90, max: 280 }, events: { changeSpeedPPerSec: 0.35, accelP: 0.55, accelFactor: { min: 1.05, max: 1.28 }, decelFactor: { min: 0.75, max: 0.95 }, pausePPerSec: 0.12, pauseMs: { min: 250, max: 1100 }, turnBackPPerSec: 0.08 }, jitter: { ampX: 0.8, ampY: 1.8, freqHz: { min: 6, max: 12 } }, bounds: { turnBackAtEdgeP: 0.55, marginFactor: 2.0 }, ttlMs: 22000 },
+  personWalk: { spawn: { fromLeftP: 0.5 }, speed: { min: 35, max: 95 }, events: { changeSpeedPPerSec: 0.22, accelP: 0.50, accelFactor: { min: 1.03, max: 1.14 }, decelFactor: { min: 0.82, max: 0.97 }, pausePPerSec: 0.18, pauseMs: { min: 350, max: 2000 }, turnBackPPerSec: 0.05 }, jitter: { ampX: 0.35, ampY: 1.25, freqHz: { min: 2.0, max: 4.0 } }, bounds: { turnBackAtEdgeP: 0.75, marginFactor: 2.0 }, ttlMs: 30000 },
+  floaty: { spawn: { fromLeftP: 0.5 }, speed: { min: 15, max: 90 }, events: { changeSpeedPPerSec: 0.12, accelP: 0.5, accelFactor: { min: 1.02, max: 1.12 }, decelFactor: { min: 0.82, max: 0.98 }, pausePPerSec: 0.05, pauseMs: { min: 200, max: 900 }, turnBackPPerSec: 0.03 }, jitter: { ampX: 0.5, ampY: 1.4, freqHz: { min: 3, max: 7 } }, bounds: { turnBackAtEdgeP: 0.35, marginFactor: 2.0 }, ttlMs: 26000 }
+};
 
   // 2) MobileElementDef: emoji + fontSize + spawn rate + behavior reference
   // NOTE: emojis are assumed to be "left-facing" visually by default.
@@ -211,8 +138,8 @@ personWalk: {
     car: { emoji: "🚗", fontSize: 32, ratePerSec: 1.2, behavior: "traffic" },
     bus: { emoji: "🚌", fontSize: 36, ratePerSec: 0.5, behavior: "traffic" },
     drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🪂", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🚁", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    parachute: { emoji: "🪂", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    helico: { emoji: "🚁", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
     drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
     drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
     drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
@@ -222,8 +149,8 @@ personWalk: {
     drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
     drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
     drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
-    drone: { emoji: "🛸", fontSize: 28, ratePerSec: 0.7, behavior: "floaty" },
+    sauropod: { emoji: "🦕", fontSize: 70, ratePerSec: 0.7, behavior: "floaty" },
+    trex: { emoji: "🦖", fontSize: 50, ratePerSec: 0.7, behavior: "floaty" },
     bird: { emoji: "🕊️", fontSize: 28, ratePerSec: 0.9, behavior: "floaty" },
   };
 
@@ -279,77 +206,38 @@ personWalk: {
 
   // 4) LayerDef: name + height + list of mobiles/fixed
 const Layers = {
-  sky:  { name: "sky",  height: 220, mobiles: ["drone", "bird"], fixed: ["cloud"] },
-  mountains: { name: "mountains", height: 260, mobiles: [],                 fixed: ["mountain"] },
-  city: { name: "city", height: 260, mobiles: ["car","pwalk"],                 fixed: ["building", "factory", "tree"] },
-  woods: { name: "woods", height: 260, mobiles: [],                 fixed: ["building", "factory", "tree"] },
+  sky:  { name: "sky",  height: 700, mobiles: ["helico", "parachute"], fixed: ["cloud"] },
+  mountains: { name: "mountains", height: 500, mobiles: [], fixed: ["mountain"] },
+  sauropod: { name: "sauropod", height: 300, mobiles: ["sauropod","trex"],fixed: ["gmushroom"] }, 
+  city: { name: "city", height: 260, mobiles: ["car","pwalk"],fixed: ["building", "factory", "dtree"] },
+  city2: { name: "city", height: 260, mobiles: ["car","pwalk"],fixed: ["building", "factory", "dtree"] },
+  woods: { name: "woods", height: 260, mobiles: [],fixed: ["building", "factory", "tree"] },
   road: { name: "road", height: 320, mobiles: ["car", "bus"],     fixed: ["tree"] },
 };
 
   // 5) PlayerDef: emoji + fontSize
   const Players = {
-    runner: { emoji: "🧍", fontSize: 34 },
-    ninja: { emoji: "🥷", fontSize: 34 },
-    robot: { emoji: "🤖", fontSize: 34 },
+    runner: { emoji: "🏃", fontSize: 34 },
+    bike: { emoji: "🚴", fontSize: 34 },
+    car: { emoji: "🚙", fontSize: 50 },
   };
 
   // 6) ChaserDef (optional in level)
-  const Chasers = {
-    ghost: {
-      emoji: "👻",
-      fontSize: 34,
-      speed: 160,
-      jitter: { ampX: 0.5, ampY: 0.5, freqHz: { min: 4, max: 9 } },
-      arriveRadius: 10,
-    },
-    trex: {
-      emoji: "🦖",
-      fontSize: 34,
-      speed: 190,
-      jitter: { ampX: 0.4, ampY: 0.4, freqHz: { min: 5, max: 10 } },
-      arriveRadius: 12,
-    },
-  };
+const Chasers = {
+  tiger: { emoji: "🐅", fontSize: 50, speed: 160, jitter: { ampX: 0.5, ampY: 0.5, freqHz: { min: 4, max: 9 } }, arriveRadius: 10 },
+  leopard: { emoji: "🐆", fontSize: 50, speed: 160, jitter: { ampX: 0.5, ampY: 0.5, freqHz: { min: 4, max: 9 } }, arriveRadius: 10 },
+  alien: { emoji: "👾", fontSize: 34, speed: 160, jitter: { ampX: 0.5, ampY: 0.5, freqHz: { min: 4, max: 9 } }, arriveRadius: 10 },
+  trex: { emoji: "🦖", fontSize: 150, speed: 190, jitter: { ampX: 0.4, ampY: 0.4, freqHz: { min: 5, max: 10 } }, arriveRadius: 12 }
+};
 
   // LevelDef: duration + layerRefs with z + player + optional chaser
   const GameDef = {
-    levels: [
-      {
-        name: "Level 1",
-        durationMs: 12000,
-        player: "runner",
-        chaser: null,
-        layers: [
-          { layer: "sky", z: 10 },
-          { layer: "city", z: 20 },
-          { layer: "road", z: 30 },
-        ],
-      },
-      {
-        name: "Level 2",
-        durationMs: 15000,
-        player: "ninja",
-        chaser: "ghost",
-        layers: [
-          { layer: "sky", z: 10 },
-          { layer: "city", z: 20 },
-          { layer: "road", z: 30 },
-        ],
-      },
-      {
-        name: "Level 3",
-        durationMs: 18000,
-        player: "robot",
-        chaser: "trex",
-        layers: [
-          { layer: "sky", z: 10 },
-          { layer: "city", z: 20 },
-          { layer: "road", z: 30 },
-        ],
-      },
-    ],
-  };
-
+  levels: [
+    { name: "Level 1 : forest", durationMs: 12000, player: "runner", chaser: "tiger", layers: [{ layer: "sky", z: 10 },{ layer: "mountain", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] },
+    { name: "Level 2 : jungle", durationMs: 15000, player: "bike", chaser: "alien", layers: [{ layer: "sky", z: 10 },{ layer: "mountain", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] },
+    { name: "Level 3 : dinosaur", durationMs: 18000, player: "car", chaser: "trex", layers: [{ layer: "sky", z: 10 },{ layer: "mountain", z: 10 }, { layer: "city", z: 20 }, { layer: "road", z: 30 }] }
+  ]
+};
   // -----------------------------
   // Drawing helpers (with mirroring)
   // -----------------------------
